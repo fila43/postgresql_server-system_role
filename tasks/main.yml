@@ -5,9 +5,24 @@
 - name: Set platform/version specific variables
   include_tasks: tasks/set_vars.yml
 
+- name: Check if requested version is supported in the system
+  fail:
+    msg: "RHEL 8 supports only Postgresql 10, 12 and 13"
+  when:
+    - ansible_facts['os_family'] == "RedHat"
+    - ansible_facts['distribution_major_version'] == "8"
+    - postgresql_version not in rhel8_streams
+
+- name: Check requested and installed version of Postgresql
+  fail:
+    msg: "Setting version {{ postgresql_version }} while {{ ansible_facts.packages['postgresql'][0].version }} is installed"
+  when:
+    - "'postgresql' in ansible_facts.packages"
+    - ansible_facts.packages['postgresql'][0].version | regex_search('([0-9]*).', '\\1') | first !=  postgresql_version
+
 - name: Ensure required packages are installed on RHEL8 based systems
   package:
-    name: "@postgresql:{{ __version }}/server"
+    name: "@postgresql:{{ postgresql_version }}/server"
     state: present
   when:
     - ansible_facts['os_family'] == "RedHat"
@@ -34,19 +49,13 @@
     state: started
     enabled: yes
 
-- name: Check requested and installed version of Postgresql
-  fail:
-    msg: "Setting version {{ __version }} while ansible_facts.packages['postgresql'][0].version is installed"
-  when:
-    - "'postgresql' in ansible_facts.packages"
-    - "ansible_facts.packages['postgresql'][0].version != {{ __version }}
 
 
 
-- name: Generate /etc/{{ __template_foo_config }}
-  template:
-    src: "{{ __template_foo_config }}.j2"
-    dest: /etc/{{ __template_foo_config }}
-    backup: yes
-    mode: 0400
-  notify: template handler to restart services
+      #- name: Generate /etc/{{ __template_foo_config }}
+      # template:
+      # src: "{{ __template_foo_config }}.j2"
+      # dest: /etc/{{ __template_foo_config }}
+      # backup: yes
+      # mode: 0400
+      # notify: template handler to restart services
