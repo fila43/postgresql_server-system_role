@@ -5,13 +5,21 @@
 - name: Set platform/version specific variables
   include_tasks: tasks/set_vars.yml
 
-- name: Check if requested version is supported in the system
+- name: Check if requested version is supported in the system (RHEL8)
   fail:
     msg: "RHEL 8 supports only Postgresql 10, 12 and 13"
   when:
     - ansible_facts['os_family'] == "RedHat"
     - ansible_facts['distribution_major_version'] == "8"
     - postgresql_version not in rhel8_streams
+
+- name: Check if requested version is supported in system (RHEL9)
+  fail:
+    msg: "RHEL 9 supports only Postgresql 13"
+  when:
+    - ansible_facts['os_family'] == "RedHat"
+    - ansible_facts['distribution_major_version'] == "9"
+    - postgresql version not in rhel9_streams
 
 - name: Check requested and installed version of Postgresql
   fail:
@@ -49,7 +57,29 @@
     state: started
     enabled: yes
 
+- name: Configure pg_hba.conf
+  become: yes
+  template:
+    backup: yes
+    dest: "/var/lib/pgsql/data/pg_hba.conf"
+    src: pg_hba.conf.j2
+    mode: 0600
+    owner: postgres
+    group: postgres
+  when: pg_hba_conf is defined
+  notify: restart postgresql
 
+- name: Configure postgresql.conf
+  become: yes
+  template:
+    backup: yes
+    dest: "/var/lib/pgsql/data/postgresql.conf"
+    src: postgresql.conf.j2
+    mode: 0600
+    owner: postgres
+    group: postgres
+  when: postgresql_conf is defined
+  notify: restart postgresql
 
 
       #- name: Generate /etc/{{ __template_foo_config }}
