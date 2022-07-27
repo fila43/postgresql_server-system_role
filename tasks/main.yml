@@ -78,14 +78,25 @@
     mode: 0600
     owner: postgres
     group: postgres
-  when: postgresql_conf is defined
+  when: postgresql_server_conf is defined
   notify: restart postgresql
 
+- name: Set password for super user
+  become: yes
+  become_user: postgres
+  environment:
+    PGPASSWORD: {{ postgresql_password }}
+  command:
+    cmd: psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '{{ postgresql_password }}';"
 
-      #- name: Generate /etc/{{ __template_foo_config }}
-      # template:
-      # src: "{{ __template_foo_config }}.j2"
-      # dest: /etc/{{ __template_foo_config }}
-      # backup: yes
-      # mode: 0400
-      # notify: template handler to restart services
+- name: Enable logging in by password
+  replace:
+    path: /var/lib/pgsql/data/pg_hba.conf
+    regexp: '(peer|ident)$'
+    replace: 'md5'
+    backup: yes
+  notify: restart postgresql
+
+- name: Run provided SQL script
+  include_tasks: input_sql_file.yml
+  when: postgresql_input_file is defined
