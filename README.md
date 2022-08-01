@@ -16,33 +16,26 @@ A description of all input variables (i.e. variables that are defined in
 `defaults/main.yml`) for the role should go here as these form an API of the
 role.
 
-Variables that are not intended as input, like variables defined in
-`vars/main.yml`, variables that are read from other roles and/or the global
-scope (ie. hostvars, group vars, etc.) can be also mentioned here but keep in
-mind that as these are probably not part of the role API they may change during
-the lifetime.
+
 
 Example of setting the variables:
 
 ```yaml
-template_foo: "oof"
-template_bar: "baz"
+postgresql_version: "13"
+postgresql_password: "mysecretpassword"
 ```
-
-### Variables Exported by the Role
-
-This section is optional.  Some roles may export variables for playbooks to
-use later.  These are analogous to "return values" in Ansible modules.  For
-example, if a role performs some action that will require a system reboot, but
-the user wants to defer the reboot, the role might set a variable like
-`template_reboot_needed: true` that the playbook can use to reboot at a more
-convenient time.
-
-Example:
-
-`template_reboot_needed` - default `false` - if `true`, this means
-a reboot is needed to apply the changes made by the role
-
+```yaml
+pg_hba_conf:
+	- { type: local, database: all, user: all, auth_method: peer }
+	- { type: host, database: all, user: all, address: '127.0.0.1/32' auth_method: ident }
+	- { type: host, database: all, user: all, address: '::1/128', auth_method: ident }
+```
+```yaml
+postgresql_server_conf:
+	ssl: on
+	shared_buffers: 128 MB
+	huge_pages: try
+```
 ## Dependencies
 
 A list of other roles hosted on Galaxy should go here, plus any details in
@@ -57,14 +50,14 @@ passed in as parameters) is always nice for users too:
 ```yaml
 - hosts: all
   vars:
-    template_foo: "foo foo!"
-    template_bar: "progress bar"
+    postgresql_version: "13"
+    postgresql_password: "passwd"
 
   roles:
-    - linux-system-roles.template
+    - postgresql-system_role
 ```
 
-More examples can be provided in the [`examples/`](examples) directory. These
+13More examples can be provided in the [`examples/`](examples) directory. These
 can be useful especially for documentation.
 
 ## License
