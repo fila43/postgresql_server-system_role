@@ -26,15 +26,15 @@ postgresql_password: "mysecretpassword"
 ```
 ```yaml
 pg_hba_conf:
-	- { type: local, database: all, user: all, auth_method: peer }
-	- { type: host, database: all, user: all, address: '127.0.0.1/32' auth_method: ident }
-	- { type: host, database: all, user: all, address: '::1/128', auth_method: ident }
+  - { type: local, database: all, user: all, auth_method: peer }
+  - { type: host, database: all, user: all, address: '127.0.0.1/32' auth_method: ident }
+  - { type: host, database: all, user: all, address: '::1/128', auth_method: ident }
 ```
 ```yaml
 postgresql_server_conf:
-	ssl: on
-	shared_buffers: 128 MB
-	huge_pages: try
+  ssl: on
+  shared_buffers: 128 MB
+  huge_pages: try
 ```
 ## Dependencies
 
