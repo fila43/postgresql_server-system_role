@@ -16,20 +16,23 @@ A description of all input variables (i.e. variables that are defined in
 `defaults/main.yml`) for the role should go here as these form an API of the
 role.
 
-
-
 Example of setting the variables:
 
 ```yaml
 postgresql_version: "13"
 postgresql_password: "mysecretpassword"
 ```
+## Optional Variables
+A description of input variables that are not reqiured. Upstream configuration is used by default.
+Usage of `pg_hba_conf` causes replacement of default upstream configuration
 ```yaml
 pg_hba_conf:
   - { type: local, database: all, user: all, auth_method: peer }
   - { type: host, database: all, user: all, address: '127.0.0.1/32' auth_method: ident }
   - { type: host, database: all, user: all, address: '::1/128', auth_method: ident }
 ```
+Usage of `postgresql_server_conf` adds defined values at the end of postgresql.conf.
+So the default ones are overwritten.
 ```yaml
 postgresql_server_conf:
   ssl: on
