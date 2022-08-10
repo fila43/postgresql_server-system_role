@@ -39,6 +39,16 @@ postgresql_server_conf:
   shared_buffers: 128 MB
   huge_pages: try
 ```
+To set up ssl connection it's necessary to set up `ssl_enable` variable and provide server certificate and key.
+```
+ssl_enable: on
+```
+To specify certificate name use `cert_name` variable. by default is set to:
+```
+cert_name: "server"
+```
+You can copy your certificate to `/etc/pki/tls/certs/` and key to `/etc/pki/tls/private/` or
+you can also use certificate system role. For more detail see examples.
 ## Dependencies
 
 A list of other roles hosted on Galaxy should go here, plus any details in
