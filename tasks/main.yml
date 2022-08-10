@@ -19,7 +19,7 @@
   when:
     - ansible_facts['os_family'] == "RedHat"
     - ansible_facts['distribution_major_version'] == "9"
-    - postgresql version not in rhel9_streams
+    - postgresql_version not in rhel9_streams
 
 - name: Check requested and installed version of Postgresql
   fail:
@@ -44,18 +44,71 @@
   when:
     - ansible_facts['distribution_major_version'] != "8"
 
-- name: Init DB
-  command:
-    cmd: postgresql-setup --initdb
-    creates: /var/lib/pgsql/data/postgresql.conf
+- name: Init DB and set up password
+  block:
+    - name: Init DB
+      command:
+        cmd: postgresql-setup --initdb
+        creates: /var/lib/pgsql/data/postgresql.conf
+
+    - name: Start Postgresql server
+      service:
+        name: "postgresql"
+        state: started
+        enabled: yes
+
+    - name: Set password for super user
+      become: yes
+      become_user: postgres
+      environment:
+        PGPASSWORD: "{{ postgresql_password }}"
+      command:
+        cmd: psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '{{ postgresql_password }}';"
+
+    - name: Enable logging in by password
+      replace:
+        path: /var/lib/pgsql/data/pg_hba.conf
+        regexp: '(peer|ident)$'
+        replace: 'md5'
+        backup: yes
+      notify: restart postgresql
   when:
     - not postgresql_conf.stat.exists
 
-- name: Ensure required services are enabled and started
-  service:
-    name: "postgresql"
-    state: started
-    enabled: yes
+- name: Run provided SQL script
+  include_tasks: input_sql_file.yml
+  when: postgresql_input_file is defined
+
+- name: Install TLS certificates for postgresql
+  file:
+    src: "/etc/pki/tls/certs/{{ cert_name }}.crt"
+    dest: "/var/lib/pgsql/data/{{ cert_name }}.crt"
+    state: link
+    owner: postgres
+  when:
+    - crt_file.stat.exists
+    - key_file.stat.exists
+
+- name: Install postgresql server private key
+  file:
+    src: "/etc/pki/tls/private/{{ cert_name }}.key"
+    dest: "/var/lib/pgsql/data/{{ cert_name }}.key"
+    state: link
+    owner: postgres
+  when:
+    - crt_file.stat.exists
+    - key_file.stat.exists
+
+- name: Enable SSL
+  replace:
+    path: "/var/lib/pgsql/data/postgresql.conf"
+    regexp: '#(ssl\s=\s).*$'
+    replace: '\1on'
+  when:
+    - crt_file.stat.exists
+    - key_file.stat.exists
+    - ssl_enable is defined
+  notify: restart postgresql
 
 - name: Set up recommanded shared_buffers size
   replace:
@@ -94,23 +147,3 @@
     group: postgres
   when: postgresql_server_conf is defined
   notify: restart postgresql
-
-- name: Set password for super user
-  become: yes
-  become_user: postgres
-  environment:
-    PGPASSWORD: "{{ postgresql_password }}"
-  command:
-    cmd: psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '{{ postgresql_password }}';"
-
-- name: Enable logging in by password
-  replace:
-    path: /var/lib/pgsql/data/pg_hba.conf
-    regexp: '(peer|ident)$'
-    replace: 'md5'
-    backup: yes
-  notify: restart postgresql
-
-- name: Run provided SQL script
-  include_tasks: input_sql_file.yml
-  when: postgresql_input_file is defined
