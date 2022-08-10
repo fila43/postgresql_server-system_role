@@ -77,6 +77,6 @@
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 {% for item in pg_hba_conf %}
-{{ item.type }} {{ item.database }} {{ item.user }} {{ item.address }} {{ item.method }} {{ item.options | default('') }}
+{{ item.type }} {{ item.database }} {{ item.user }} {{ item.address | default('') }} {{ item.auth_method }} {{ item.options | default('') }}
 {% endfor %}
 
