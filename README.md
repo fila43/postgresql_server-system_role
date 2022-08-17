@@ -21,6 +21,7 @@ Example of setting the variables:
 ```yaml
 postgresql_version: "13"
 postgresql_password: "mysecretpassword"
+cert_name: "server"
 ```
 ## Optional Variables
 A description of input variables that are not reqiured. Upstream configuration is used by default.
@@ -40,11 +41,11 @@ postgresql_server_conf:
   huge_pages: try
 ```
 To set up ssl connection it's necessary to set up `ssl_enable` variable and provide server certificate and key.
-```
+```yaml
 ssl_enable: on
 ```
 To specify certificate name use `cert_name` variable. by default is set to:
-```
+```yaml
 cert_name: "server"
 ```
 You can copy your certificate to `/etc/pki/tls/certs/server.crt` and key to `/etc/pki/tls/private/server.key` or
