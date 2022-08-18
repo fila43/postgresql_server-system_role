@@ -5,14 +5,23 @@
 
 - name: "Check postgresql.conf"
   stat:
-        path: /var/lib/pgsql/data/postgresql.conf
+    path: /var/lib/pgsql/data/postgresql.conf
   register: postgresql_conf
+
+- name: "Check TLS crt file"
+  stat:
+    path: "/etc/pki/tls/certs/{{ cert_name }}.crt"
+  register: crt_file
+
+- name: "Check TLS private key file"
+  stat:
+    path: "/etc/pki/tls/private/{{ cert_name}}.key"
+  register: key_file
 
 - name: "Supported streams in RHEL8"
   set_fact:
-    rhel8_streams: ["10","12","13"]
+    rhel8_streams: ["10", "12", "13"]
 
 - name: "Supported streams in RHEL9"
   set_fact:
     rhel9_streams: ["13"]
-
