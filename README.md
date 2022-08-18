@@ -76,7 +76,7 @@ passed in as parameters) is always nice for users too:
     postgresql_password: "passwd"
 
   roles:
-    - postgresql-system_role
+    - postgresql_server
 ```
 
 13More examples can be provided in the [`examples/`](examples) directory. These
