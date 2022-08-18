@@ -23,10 +23,12 @@
 
 - name: Check requested and installed version of Postgresql
   fail:
-    msg: "Setting version {{ postgresql_version }} while {{ ansible_facts.packages['postgresql'][0].version }} is installed"
+    msg: "Setting version {{ postgresql_version }} while
+      {{ ansible_facts.packages['postgresql'][0].version }} is installed"
   when:
     - "'postgresql' in ansible_facts.packages"
-    - ansible_facts.packages['postgresql'][0].version | regex_search('([0-9]*).', '\\1') | first !=  postgresql_version
+    - ansible_facts.packages['postgresql'][0].version |
+      regex_search('([0-9]*).', '\\1') | first !=  postgresql_version
 
 - name: Ensure required packages are installed on RHEL8 based systems
   package:
@@ -63,7 +65,9 @@
       environment:
         PGPASSWORD: "{{ postgresql_password }}"
       command:
-        cmd: psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '{{ postgresql_password }}';"
+        cmd: >
+          psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD
+          '{{ postgresql_password }}';"
 
     - name: Enable logging in by password
       replace:

@@ -8,16 +8,20 @@
 - name: Copy SQL file on the host
   copy:
     src: "{{ postgresql_input_file }}"
-    dest: "/tmp/{{ postgresql_input_file }}"
+    dest: "/tmp/input.sql"
     owner: postgres
     group: postgres
-    node: '0666'
+    mode: '0666'
+  tags:
+    - dir_not_exist
 
 - name: Run sql script from {{ postgresql_input_file }}
+  become: yes
+  become_user: postgres
   environment:
     PGPASSWORD: "{{ postgresql_password }}"
   command:
-    cmd: psql -U postgres -f "/tmp/{{ postgresql_input_file }}"
+    cmd: psql -U postgres -f "/tmp/input.sql"
   register: psql_output
 
 - name: Print the output of psql command for {{ postgresql_input_file }}
@@ -27,4 +31,4 @@
 - name: Remove sql script {{ postgresql_input_file }} from the host
   file:
     state: absent
-    path: "/tmp/{{ postgresql_input_file}}"
+    path: "/tmp/input.sql"
