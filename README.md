@@ -44,12 +44,13 @@ To set up ssl connection it's necessary to set up `ssl_enable` variable and prov
 ```yaml
 ssl_enable: on
 ```
-To specify certificate name use `cert_name` variable. by default is set to:
+To specify certificate name use `cert_name` variable.
+You can copy your certificate to `/etc/pki/tls/certs/server.crt` and key to `/etc/pki/tls/private/server.key` or
+you can also use certificate system role. For more detail see examples.\
 ```yaml
 cert_name: "server"
 ```
-You can copy your certificate to `/etc/pki/tls/certs/server.crt` and key to `/etc/pki/tls/private/server.key` or
-you can also use certificate system role. For more detail see examples.\\
+
 For running SQL script define path to your SQL file using `postgresql_input_file`:
 ```yaml
 postgresql_input_file: "/tmp/mypath/file.sql"
