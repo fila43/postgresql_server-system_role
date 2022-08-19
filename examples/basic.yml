@@ -6,4 +6,4 @@
   tasks:
     - name: Configure postgresql using role
       import_role:
-        name: postgresql_server
+        name: postgresql_server-system_role

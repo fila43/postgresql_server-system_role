@@ -6,4 +6,4 @@
     postgresql_input_file: "examples/simple.sql"
 
   roles:
-    - postgresql_server
+    - postgresql_server-system_role

@@ -4,7 +4,11 @@
   hosts: localhost
   vars:
     pg_hba_conf:
-      - { type: hostssl, database: all, user: all, auth_method: md5, address: '127.0.0.1/32'}
+      - type: hostssl
+        database: all
+        user: all
+        auth_method: md5
+        address: '127.0.0.1/32'
     ssl_enable: on
     certificate_requests:
       - name: server
@@ -13,4 +17,4 @@
 
   roles:
     - linux-system-roles.certificate
-    - postgresql_server
+    - postgresql_server-system_role
