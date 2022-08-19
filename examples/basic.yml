@@ -1,3 +1,4 @@
+---
 - name: Simple deploy PostgreSQL server version 10
   hosts: localhost
   vars:
