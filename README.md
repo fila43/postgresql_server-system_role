@@ -28,9 +28,20 @@ A description of input variables that are not reqiured. Upstream configuration i
 Usage of `pg_hba_conf` causes replacement of default upstream configuration
 ```yaml
 pg_hba_conf:
-  - { type: local, database: all, user: all, auth_method: peer }
-  - { type: host, database: all, user: all, address: '127.0.0.1/32' auth_method: ident }
-  - { type: host, database: all, user: all, address: '::1/128', auth_method: ident }
+  - type: local
+    database: all
+    user: all
+    auth_method: peer
+  - type: host
+    database: all
+    user: all
+    address: '127.0.0.1/32'
+    auth_method: ident
+  - type: host
+    database: all
+    user: all
+    address: '::1/128'
+    auth_method: ident
 ```
 Usage of `postgresql_server_conf` adds defined values at the end of postgresql.conf.
 So the default ones are overwritten.
@@ -76,7 +87,7 @@ passed in as parameters) is always nice for users too:
     postgresql_password: "passwd"
 
   roles:
-    - postgresql_server
+    - postgresql_server-system_role
 ```
 
 13More examples can be provided in the [`examples/`](examples) directory. These
