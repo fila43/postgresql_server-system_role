@@ -57,7 +57,7 @@ ssl_enable: on
 ```
 To specify certificate name use `cert_name` variable.
 You can copy your certificate to `/etc/pki/tls/certs/server.crt` and key to `/etc/pki/tls/private/server.key` or
-you can also use certificate system role. For more detail see [`examples/`] (examples).
+you can also use certificate system role. For more detail see [`examples/`](examples).
 ```yaml
 cert_name: "server"
 ```
