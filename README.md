@@ -66,6 +66,12 @@ For running SQL script define path to your SQL file using `postgresql_input_file
 ```yaml
 postgresql_input_file: "/tmp/mypath/file.sql"
 ```
+By default the system role makes server settings tuning based on system resources,
+This functionality is enabled by default. For disabling it there is a possibility to
+set up the `tuning_off` variable.
+```yaml
+tuning_off: off
+```
 More about usage could be found in [`examples/`](examples) directory
 
 
