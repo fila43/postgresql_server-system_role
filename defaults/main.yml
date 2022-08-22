@@ -7,3 +7,4 @@
 postgresql_version: "13"
 postgresql_password: "mysecretpassword"
 cert_name: "server"
+server_tuning: true

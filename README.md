@@ -70,7 +70,7 @@ By default the system role makes server settings tuning based on system resource
 This functionality is enabled by default. For disabling it there is a possibility to
 set up the `tuning_off` variable.
 ```yaml
-tuning_off: off
+server_tuning: false
 ```
 More about usage could be found in [`examples/`](examples) directory
 

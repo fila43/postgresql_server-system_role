@@ -119,14 +119,14 @@
     path: "/var/lib/pgsql/data/postgresql.conf"
     regexp: '(shared_buffers\s=\s)([0-9]+)(\w\w)'
     replace: '\1 {{ (ansible_memory_mb.real.total/4)|int|abs  }}MB'
-  when: tuning_off is not defined
+  when: server_tuning
 
 - name: Set up recommended cache_size
   replace:
     path: "/var/lib/pgsql/data/postgresql.conf"
     regexp: '#(effective_cache_size\s=\s)[0-9]+\w\w'
     replace: '\1 {{ (ansible_memory_mb.real.total/2)|int|abs  }}MB'
-  when: tunning_off is not defined
+  when: server_tuning
 
 - name: Configure pg_hba.conf
   become: yes
