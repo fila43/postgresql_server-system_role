@@ -24,6 +24,7 @@ postgresql_password: "mysecretpassword"
 cert_name: "server"
 ```
 ## Optional Variables
+### pg\_hba\_conf
 A description of input variables that are not reqiured. Upstream configuration is used by default.
 Usage of `pg_hba_conf` causes replacement of default upstream configuration
 ```yaml
@@ -43,6 +44,7 @@ pg_hba_conf:
     address: '::1/128'
     auth_method: ident
 ```
+### postgresql\_server\_conf
 Usage of `postgresql_server_conf` adds defined values at the end of postgresql.conf.
 So the default ones are overwritten.
 ```yaml
@@ -51,21 +53,24 @@ postgresql_server_conf:
   shared_buffers: 128 MB
   huge_pages: try
 ```
+### ssl\_enable
 To set up ssl connection it's necessary to set up `ssl_enable` variable and provide server certificate and key.
 ```yaml
 ssl_enable: yes
 ```
+### cert\_name
 To specify certificate name use `cert_name` variable.
 You can copy your certificate to `/etc/pki/tls/certs/server.crt` and key to `/etc/pki/tls/private/server.key` or
 you can also use certificate system role. For more detail see [`examples/`](examples).
 ```yaml
 cert_name: "server"
 ```
-
+### postgresql\_input\_file
 For running SQL script define path to your SQL file using `postgresql_input_file`:
 ```yaml
 postgresql_input_file: "/tmp/mypath/file.sql"
 ```
+### server\_tuning
 By default the system role makes server settings tuning based on system resources,
 This functionality is enabled by default. For disabling it there is a possibility to
 set up the `tuning_off` variable.
